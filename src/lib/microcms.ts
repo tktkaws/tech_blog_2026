@@ -109,7 +109,6 @@ export async function highlightCodeBlocks(html: string): Promise<string> {
 			const [full, wrapperAttrs, preAttrs = '', codeAttrs = '', rawCode = ''] = match;
 			const lang = resolveLanguage(preAttrs, codeAttrs);
 			const code = decodeHtmlEntities(rawCode);
-			const lineCount = code.replace(/\r\n?/g, '\n').replace(/\n$/, '').split('\n').length;
 
 			let highlighted: string;
 			try {
@@ -123,15 +122,15 @@ export async function highlightCodeBlocks(html: string): Promise<string> {
 					themes: shikiThemes,
 				});
 			}
-			if (lineCount >= 10) {
-				const filename = wrapperAttrs?.match(/\bdata-filename\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
-				const title = filename?.[1] ?? filename?.[2];
-				const safeTitle = title ? decodeHtmlEntities(title).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-				const background = highlighted.match(/background-color:([^;"]+)/)?.[1] ?? 'transparent';
-				const darkBackground = highlighted.match(/--shiki-dark-bg:([^;"]+)/)?.[1] ?? background;
-				highlighted = `<details class="code-accordion" style="--code-bg:${background};--code-dark-bg:${darkBackground}"><summary>${safeTitle || `コードを表示（${lineCount}行）`}</summary>${highlighted}</details>`;
+			if (wrapperAttrs !== undefined) {
+				const filename = wrapperAttrs.match(/\bdata-filename\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+				const title = decodeHtmlEntities(filename?.[1] ?? filename?.[2] ?? '').trim();
+				if (title) {
+					const safeTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+					highlighted = `<div class="code-block"><span class="code-block__filename">${safeTitle}</span>${highlighted}</div>`;
+				}
+				highlighted = `<div${wrapperAttrs}>${highlighted}`;
 			}
-			if (wrapperAttrs !== undefined) highlighted = `<div${wrapperAttrs}>${highlighted}`;
 			return { full, highlighted };
 		}),
 	);
