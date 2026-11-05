@@ -1,0 +1,92 @@
+---
+import { Moon, Sun } from '@lucide/astro';
+---
+
+<span class="site-control">
+	<button
+		type="button"
+		class="theme-toggle"
+		data-theme-toggle
+		aria-label="ダークモードに切り替える"
+	>
+		<Moon
+			class="theme-toggle__icon theme-toggle__icon--dark"
+			aria-hidden="true"
+			size={20}
+			stroke-width={2}
+		/>
+		<Sun
+			class="theme-toggle__icon theme-toggle__icon--light"
+			aria-hidden="true"
+			size={20}
+			stroke-width={2}
+		/>
+	</button>
+	<span class="site-control__tooltip" aria-hidden="true" data-theme-toggle-tooltip>
+		ダークモードに切り替える
+	</span>
+</span>
+
+<style>
+	.theme-toggle {
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 40px;
+		min-height: 40px;
+		margin: 0;
+		padding: 0.35rem;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		color: inherit;
+		line-height: 0;
+		cursor: pointer;
+		outline: none;
+	}
+
+	.theme-toggle:hover,
+	.theme-toggle:focus-visible {
+		background: var(--color-surface);
+	}
+
+	.theme-toggle:focus-visible {
+		outline: 2px solid var(--color-border);
+		outline-offset: 0;
+	}
+
+	.theme-toggle :global(.theme-toggle__icon) {
+		display: none;
+		flex-shrink: 0;
+	}
+
+	:global(html[data-theme='light']) .theme-toggle :global(.theme-toggle__icon--light),
+	:global(html[data-theme='dark']) .theme-toggle :global(.theme-toggle__icon--dark) {
+		display: block;
+	}
+</style>
+
+<script>
+	const syncLabel = (scheme: ColorScheme) => {
+		const button = document.querySelector('[data-theme-toggle]');
+		const tooltip = document.querySelector('[data-theme-toggle-tooltip]');
+		if (!(button instanceof HTMLButtonElement)) return;
+		const label = scheme === 'dark' ? 'ライトモードに切り替える' : 'ダークモードに切り替える';
+		button.setAttribute('aria-label', label);
+		if (tooltip instanceof HTMLElement) tooltip.textContent = label;
+	};
+
+	if (window.__colorScheme) {
+		const { resolve, toggle } = window.__colorScheme;
+		syncLabel(resolve());
+
+		document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+			toggle();
+		});
+
+		document.addEventListener('color-scheme-change', (event) => {
+			if (event instanceof CustomEvent) syncLabel(event.detail);
+		});
+	}
+</script>

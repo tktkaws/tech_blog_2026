@@ -1,0 +1,101 @@
+---
+import { SITE_TITLE } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
+---
+
+<header class="p-6 sm:p-10 lg:p-12">
+	{
+		isHome ? (
+			<h1 class="font-display text-3xl lg:text-4xl font-bold">
+				<a href="/">{SITE_TITLE}</a>
+			</h1>
+		) : (
+			<a href="/" class="w-fit font-display text-3xl lg:text-4xl font-bold">
+				{SITE_TITLE}
+			</a>
+		)
+	}
+	<div class="site-controls">
+		<ThemeToggle />
+	</div>
+</header>
+<div class="site-frame" aria-hidden="true"></div>
+
+<style>
+	header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		width: min(100%, 1600px);
+		margin: 0 auto;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	header a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.site-controls {
+		box-sizing: border-box;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		flex-shrink: 0;
+		gap: 0.5rem;
+	}
+
+	.site-controls :global(.site-control) {
+		position: relative;
+		display: inline-flex;
+	}
+
+	.site-controls :global(.site-control__tooltip) {
+		/* TEMP: ツールチップ非表示。復活時はこの1行を削除 */
+		display: none;
+		position: absolute;
+		top: calc(100% + 0.35rem);
+		right: 0;
+		z-index: 1;
+		box-sizing: border-box;
+		width: max-content;
+		max-width: min(16rem, calc(100vw - 3rem));
+		padding: 0.4rem 0.6rem;
+		border: 1px solid var(--color-border);
+		outline: 1px solid var(--color-border);
+		outline-offset: 0;
+		background: var(--color-surface);
+		color: light-dark(#000, #fff);
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		line-height: 1.3;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		visibility: hidden;
+		translate: 0 -0.15rem;
+		transition:
+			opacity 0.15s ease,
+			visibility 0.15s ease,
+			translate 0.15s ease;
+	}
+
+	.site-controls :global(.site-control:hover .site-control__tooltip),
+	.site-controls :global(.site-control:has(:focus-visible) .site-control__tooltip) {
+		opacity: 1;
+		visibility: visible;
+		translate: 0 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-controls :global(.site-control__tooltip) {
+			transition-duration: 0.01ms;
+			translate: none;
+		}
+	}
+</style>
