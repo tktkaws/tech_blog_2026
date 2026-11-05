@@ -1,0 +1,50 @@
+---
+import BlogPost from '../layouts/BlogPost.astro';
+import type { Heading } from '../lib/microcms';
+
+const title = 'About | Thinking in the Grey';
+const description =
+	'当ブログについて、著者について、Webアクセシビリティへの関心';
+const pubDate = new Date('2021-08-08');
+
+const headings: Heading[] = [
+	{ depth: 2, slug: 'about', text: '当ブログについて' },
+	{ depth: 2, slug: 'author', text: '著者について' },
+	{ depth: 2, slug: 'accessibility', text: 'Webアクセシビリティへの関心' },
+];
+---
+
+<BlogPost title={title} description={description} pubDate={pubDate} headings={headings}>
+	<h2 id="about">当ブログについて</h2>
+	
+
+	<p>
+		Webアクセシビリティ、フロントエンドに関する技術を中心とした学習記録です。<br>
+		白でも黒でもないグレーゾーンで考え続けるという意味を込めてこのタイトルをつけました。
+	</p>
+
+	<h2 id="author">著者について</h2>
+	<p>
+		2024年1月から都内Web制作会社でコーダーとして勤務しています。<br>
+		コーポレートサイトの構築（静的サイト、WordPress）がメインです。<br>
+		お笑いとHIPHOPを好んでいます。
+	</p>
+
+	<h2 id="accessibility">Webアクセシビリティへの関心</h2>
+	<p>
+		私がWebアクセシビリティに出会ったのは、Web制作会社への転職活動中でした。<br>
+		デジタル庁の資料を読み、「誰一人取り残されない、人に優しいデジタル化を。」というミッションに強く共感しました。<br>
+		そして、『webアプリケーションアクセシビリティ』に深い感銘を受けました。<br>
+		この書籍との出会いをきっかけに学習が加速し始めました。<br>
+		関連イベントにも積極的に参加し、DHS Trusted Tester Certificationも取得しました。<br>
+		現在もWebアクセシビリティに関する知識をほぼ毎日インプットし続けています。<br><br>
+
+		「誰一人取り残されない」という言葉に強く共感した背景には、私自身の生き辛さの経験があります。<br>
+		学生時代から他人の気持ちを理解できない場面が多く、常に学習や類推によってコミュニケーションを取ってきました。<br>
+		そうした経験から、生き辛さを感じる人を一人でも減らしたいという思いが根底にあります。<br><br>
+
+		私はWebサイトの閲覧に対して障害のある状態ではありません。<br>
+		しかし，Webアクセシビリティこそ自分が取り組むべきものだと確信しています。<br>
+		Webを通して人にやさしい社会をつくることが、私の目指す道です。
+	</p>
+</BlogPost>
