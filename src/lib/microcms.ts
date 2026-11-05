@@ -1,0 +1,145 @@
+import { bundledLanguages, codeToHtml } from 'shiki';
+import astroConfig from '../../astro.config.mjs';
+
+// microCMS HTML bypasses Astro's Markdown renderer, so reuse its themes explicitly.
+const shikiThemes = astroConfig.markdown!.shikiConfig!.themes!;
+
+/** Strip HTML tags and collapse whitespace for meta descriptions. */
+export function plainTextExcerpt(html: string, maxLength = 120): string {
+	const text = html
+		.replace(/<[^>]*>/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+	if (text.length <= maxLength) {
+		return text;
+	}
+
+	return `${text.slice(0, maxLength).trimEnd()}…`;
+}
+
+export type Heading = {
+	depth: 2 | 3;
+	slug: string;
+	text: string;
+};
+
+/** Add sequential fragment identifiers to ordered-list items in article content. */
+export function withOrderedListIds(html: string): string {
+	let counter = 0;
+	const lists: string[] = [];
+	return html.replace(/<\/?(?:ol|ul)\b[^>]*>|<li\b[^>]*>/gi, (tag) => {
+		const list = tag.match(/^<(\/?)(ol|ul)\b/i);
+		if (list) {
+			if (list[1]) lists.pop();
+			else lists.push(list[2].toLowerCase());
+			return tag;
+		}
+		if (lists.at(-1) !== 'ol') return tag;
+		counter += 1;
+		if (/\bid\s*=/i.test(tag)) return tag;
+		return tag.replace(/>$/, ` id="ref-${counter}">`);
+	});
+}
+
+/** Extract h2/h3 headings and ensure each has an id for in-page links. */
+export function withHeadingIds(html: string): { html: string; headings: Heading[] } {
+	const headings: Heading[] = [];
+	let counter = 0;
+
+	const htmlWithIds = html.replace(
+		/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+		(_full, level: string, attrs: string, inner: string) => {
+			const depth = Number(level) as 2 | 3;
+			const text = inner.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+			const idMatch = attrs.match(/\bid=["']([^"']+)["']/i);
+			let slug = idMatch?.[1];
+			let nextAttrs = attrs;
+
+			if (!slug) {
+				counter += 1;
+				slug = `heading-${counter}`;
+				nextAttrs = attrs.trim() ? `${attrs} id="${slug}"` : ` id="${slug}"`;
+			}
+
+			if (text) {
+				headings.push({ depth, slug, text });
+			}
+
+			return `<h${level}${nextAttrs}>${inner}</h${level}>`;
+		},
+	);
+
+	return { html: htmlWithIds, headings };
+}
+
+function decodeHtmlEntities(text: string): string {
+	return text
+		.replace(/&nbsp;/g, ' ')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, "'")
+		.replace(/&amp;/g, '&');
+}
+
+function resolveLanguage(...attrs: string[]): string {
+	const joined = attrs.join(' ');
+	const match = joined.match(/language-([\w+#.-]+)/i);
+	const lang = match?.[1]?.toLowerCase();
+
+	if (lang && lang in bundledLanguages) {
+		return lang;
+	}
+
+	return 'plaintext';
+}
+
+/** Highlight microCMS `<pre><code>` blocks with Shiki. */
+export async function highlightCodeBlocks(html: string): Promise<string> {
+	const codeBlockPattern = /(?:<div\b([^>]*\bdata-filename\s*=\s*(?:"[^"]*"|'[^']*')[^>]*)>\s*)?<pre([^>]*)>\s*<code([^>]*)>([\s\S]*?)<\/code>\s*<\/pre>/gi;
+	const matches = [...html.matchAll(codeBlockPattern)];
+
+	if (matches.length === 0) {
+		return html;
+	}
+
+	const replacements = await Promise.all(
+		matches.map(async (match) => {
+			const [full, wrapperAttrs, preAttrs = '', codeAttrs = '', rawCode = ''] = match;
+			const lang = resolveLanguage(preAttrs, codeAttrs);
+			const code = decodeHtmlEntities(rawCode);
+			const lineCount = code.replace(/\r\n?/g, '\n').replace(/\n$/, '').split('\n').length;
+
+			let highlighted: string;
+			try {
+				highlighted = await codeToHtml(code, {
+					lang,
+					themes: shikiThemes,
+				});
+			} catch {
+				highlighted = await codeToHtml(code, {
+					lang: 'plaintext',
+					themes: shikiThemes,
+				});
+			}
+			if (lineCount >= 10) {
+				const filename = wrapperAttrs?.match(/\bdata-filename\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+				const title = filename?.[1] ?? filename?.[2];
+				const safeTitle = title ? decodeHtmlEntities(title).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+				const background = highlighted.match(/background-color:([^;"]+)/)?.[1] ?? 'transparent';
+				const darkBackground = highlighted.match(/--shiki-dark-bg:([^;"]+)/)?.[1] ?? background;
+				highlighted = `<details class="code-accordion" style="--code-bg:${background};--code-dark-bg:${darkBackground}"><summary>${safeTitle || `コードを表示（${lineCount}行）`}</summary>${highlighted}</details>`;
+			}
+			if (wrapperAttrs !== undefined) highlighted = `<div${wrapperAttrs}>${highlighted}`;
+			return { full, highlighted };
+		}),
+	);
+
+	let result = html;
+	for (const { full, highlighted } of replacements) {
+		result = result.replace(full, () => highlighted);
+	}
+
+	return result;
+}
