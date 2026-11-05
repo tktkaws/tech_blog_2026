@@ -225,8 +225,6 @@ const {
 	}
 	:global(.markdown-body :is(h1, h2, h3, h4, h5, h6)) {
 		font-family: var(--font-display);
-		/* body の font-size-adjust: from-font が Display に効いてサイズが変わるのを防ぐ */
-		font-size-adjust: none;
 		text-wrap: balance;
 		border-bottom: 0;
 		padding-bottom: 0;
@@ -291,45 +289,26 @@ const {
 		content: '- ';
 		margin-left: -1.25em;
 	}
-	:global(.markdown-body .code-accordion) {
+	:global(.markdown-body .code-block) {
+		position: relative;
 		margin-top: 1.5em;
-		margin-bottom: 16px;
-		border: 1px solid var(--color-border-muted);
-		border-radius: 6px;
 	}
-	:global(.markdown-body .code-accordion summary) {
-		padding: 0.75rem 1.25rem;
-		cursor: pointer;
-		color: #bdc4cc; /* github-dark-high-contrast comment color */
-		background-color: light-dark(var(--code-bg), var(--code-dark-bg));
-		border-radius: 6px;
+	:global(.markdown-body .code-block__filename) {
+		position: absolute;
+		top: 0.75rem;
+		right: 1.25rem;
+		left: 1.25rem;
+		color: #bdc4cc;
+		font-size: 0.75rem;
+		line-height: 1.5;
+		text-align: right;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-	:global(.markdown-body .code-accordion[open] summary) {
-		border-radius: 6px 6px 0 0;
-	}
-	:global(.markdown-body .code-accordion .shiki) {
-		margin: 0;
-		border: 0;
-		border-top: 1px solid var(--color-border-muted);
-		border-radius: 0 0 6px 6px;
-	}
-	:global(.markdown-body .code-accordion[open] .shiki) {
-		animation: code-reveal 0.25s ease-out;
-	}
-	@keyframes code-reveal {
-		from {
-			opacity: 0;
-			clip-path: inset(0 0 100% 0);
-		}
-		to {
-			opacity: 1;
-			clip-path: inset(0);
-		}
-	}
-	@media (prefers-reduced-motion: reduce) {
-		:global(.markdown-body .code-accordion[open] .shiki) {
-			animation: none;
-		}
+	:global(.markdown-body .code-block > .shiki) {
+		margin-top: 0;
+		padding-top: 2.75rem;
 	}
 	:global(.markdown-body .shiki) {
 		margin-top: 1.5em;

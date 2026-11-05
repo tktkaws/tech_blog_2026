@@ -18,7 +18,6 @@
     "@lucide/astro": "^1.68.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.4",
-    "gen-interface-jp": "^0.8.0",
     "github-markdown-css": "^5.9.0",
     "microcms-js-sdk": "^3.4.0",
     "sharp": "^0.35.0",

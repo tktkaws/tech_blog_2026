@@ -1,63 +1,46 @@
-# Astro Starter Kit: Blog
+﻿# Thinking in the Grey
 
-```sh
-npm create astro@latest -- --template blog
-```
+[https://thinking-in-the-grey.pages.dev/](https://thinking-in-the-grey.pages.dev/)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+AstroとmicroCMSで作成した技術ブログです。
 
-Features:
+## 技術スタック
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+- CMS：microCMS
+- フレームワーク：Astro
+- デプロイ先：Cloudflare
 
-## 🚀 Project Structure
+## 機能
 
-Inside of your Astro project, you'll see the following folders and files:
+- タグ一覧
+- 目次
+- シンタックスハイライト
+- ダークモード
+
+## Astroのファイル構成
 
 ```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+src/
+├── content.config.ts           # microCMSの取得処理とスキーマ
+├── components/
+│   ├── BaseHead.astro           # メタ情報、共通CSS、表示設定の初期化
+│   ├── ArticlesList.astro       # 記事一覧
+│   ├── TagsList.astro           # タグナビゲーション
+│   ├── TableOfContents.astro    # 目次
+│   └── ThemeToggle.astro        # 配色の切替
+├── layouts/
+│   └── BlogPost.astro           # 記事の共通レイアウト
+├── lib/
+│   └── microcms.ts              # CMS本文のHTML加工
+├── pages/
+│   ├── index.astro              # トップページ
+│   ├── about.astro              # ブログ・著者の紹介
+│   ├── blog/[...slug].astro     # 記事詳細
+│   ├── tags/[slug].astro        # タグ別記事一覧
+│   └── rss.xml.js               # RSS
+├── scripts/                    # 目次メニューや画像拡大の操作
+└── styles/global.css           # 共通スタイルとテーマ変数
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+主なファイルを抜粋しています。
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
