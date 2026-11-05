@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ArticlesList from '../components/ArticlesList.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TagsList from '../components/TagsList.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blogs')).sort(
+	(a, b) =>
+		new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf(),
+);
+const usedTagSlugs = new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.slug)));
+const tags = (await getCollection('tags'))
+	.filter((tag) => usedTagSlugs.has(tag.data.slug))
+	.sort((a, b) => a.data.title.localeCompare(b.data.title, 'ja'));
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TagsList tags={tags.map((tag) => ({ title: tag.data.title, slug: tag.data.slug }))} />
+			<ArticlesList
+				posts={posts.map((post) => ({
+					id: post.id,
+					title: post.data.title,
+					publishedAt: post.data.publishedAt,
+					tags: post.data.tags,
+				}))}
+			/>
+		</main>
+		<Footer />
+	</body>
+</html>
