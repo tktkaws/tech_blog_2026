@@ -1,0 +1,14 @@
+/* Pagefind's default styles are loaded by PagefindConfig. Customize search here. */
+.search-control {
+	align-items: center;
+	--pf-font: var(--font-sans);
+	--pf-input-height: 40px;
+}
+
+
+/* Undefined components have no usable button when JavaScript is unavailable. */
+.search-control :is(pagefind-modal-trigger, pagefind-modal):not(:defined) {
+	display: none;
+}
+
+/* Future theme/spacing overrides can use --pf-* variables on .search-control. */

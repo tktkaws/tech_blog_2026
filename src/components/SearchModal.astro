@@ -1,0 +1,28 @@
+---
+import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
+import '../styles/search.css';
+---
+
+<div class="site-control search-control" data-search-control data-pagefind-ignore="all">
+	<PagefindConfig instance="site-search" />
+	<pagefind-modal-trigger
+		instance="site-search"
+		placeholder="記事を検索"
+		compact
+		hide-shortcut
+	></pagefind-modal-trigger>
+	<pagefind-modal instance="site-search"></pagefind-modal>
+	<noscript><span class="sr-only">記事検索にはJavaScriptが必要です。</span></noscript>
+</div>
+
+<script>
+	// Keep network and index loading failures understandable without exposing technical errors.
+	document.querySelectorAll('[data-search-control]').forEach((control) => {
+		control.addEventListener('pagefind-error', () => {
+			control.querySelectorAll('.pf-error, .pf-summary').forEach((message) => {
+				message.textContent =
+					'検索データを読み込めませんでした。ページを再読み込みして、もう一度お試しください。';
+			});
+		});
+	});
+</script>

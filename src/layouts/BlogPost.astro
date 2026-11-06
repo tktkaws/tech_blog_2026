@@ -33,6 +33,7 @@ type Props = {
 	headings?: Heading[];
 	relatedHeading?: string;
 	relatedPosts?: RelatedPost[];
+	searchable?: boolean;
 };
 
 const {
@@ -45,10 +46,11 @@ const {
 	headings = [],
 	relatedHeading = 'Related Articles',
 	relatedPosts = [],
+	searchable = false,
 } = Astro.props;
 ---
 
-<html lang="ja">
+<html lang="ja" data-pagefind-index={searchable ? '' : undefined}>
 	<head>
 		<BaseHead title={metaTitle} description={description} image={heroImage} />
 		<link
@@ -92,7 +94,11 @@ const {
 		<main>
 			<article data-article>
 				<header class="article-header border-b border-border">
-					<h1 class="p-6 sm:p-10 lg:p-12 font-display text-3xl font-bold leading-tight text-ink md:text-4xl">
+					<h1
+						class="p-6 sm:p-10 lg:p-12 font-display text-3xl font-bold leading-tight text-ink md:text-4xl"
+						data-pagefind-body={searchable ? '' : undefined}
+						data-pagefind-meta={searchable ? 'title' : undefined}
+					>
 						{title}
 					</h1>
 
@@ -120,7 +126,7 @@ const {
 						)
 					}
 				</header>
-				<div class="markdown-body p-6 sm:p-10 lg:p-12">
+				<div class="markdown-body p-6 sm:p-10 lg:p-12" data-pagefind-body={searchable ? '' : undefined}>
 					<slot />
 				</div>
 				<ImageLightbox />
