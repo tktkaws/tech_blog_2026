@@ -1,0 +1,59 @@
+/* Pagefind's default styles are loaded by PagefindConfig. Customize search here. */
+.search-control {
+	align-items: center;
+	--pf-font: var(--font-sans);
+	--pf-input-height: 40px;
+}
+
+/* Match ThemeToggle without changing the modal's colors or focus styles. */
+.search-control pagefind-modal-trigger {
+	--pf-background: transparent;
+	--pf-border-radius: 0px;
+	--pf-text-muted: var(--color-ink);
+	--pf-outline-focus: var(--color-border);
+	--pf-outline-width: 2px;
+	--pf-outline-offset: 0px;
+}
+
+/* Pagefind boosts selector specificity, so its generated button needs scoped overrides. */
+.search-control .pf-trigger-btn {
+	justify-content: center !important;
+	width: 40px !important;
+	min-height: 40px !important;
+	margin: 0 !important;
+	padding: 0.35rem !important;
+	border: 0 !important;
+	line-height: 0 !important;
+	box-shadow: none !important;
+	transition: none !important;
+}
+
+.search-control .pf-trigger-btn:is(:hover, :focus-visible) {
+	background: var(--color-surface) !important;
+}
+
+.search-control .pf-trigger-icon {
+	width: 18px !important;
+	height: 18px !important;
+}
+
+.search-control pagefind-modal {
+	--pf-border-radius: 0px;
+	--pf-border-focus: var(--color-border);
+	--pf-outline-focus: var(--color-border);
+	--pf-outline-width: 2px;
+	--pf-outline-offset: 0px;
+}
+
+/* The modal, close button and result details also have hard-coded corner radii. */
+.search-control pagefind-modal [class^='pf-'],
+.search-control pagefind-modal [class*=' pf-'] {
+	border-radius: 0 !important;
+}
+
+/* Undefined components have no usable button when JavaScript is unavailable. */
+.search-control :is(pagefind-modal-trigger, pagefind-modal):not(:defined) {
+	display: none;
+}
+
+/* Future theme/spacing overrides can use --pf-* variables on .search-control. */

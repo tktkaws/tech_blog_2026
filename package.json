@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "node --test tests/search-index.test.mjs",
     "astro": "astro"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "@lucide/astro": "^1.68.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.4",
+    "astro-pagefind": "2.0.1",
     "github-markdown-css": "^5.9.0",
     "microcms-js-sdk": "^3.4.0",
     "sharp": "^0.35.0",
