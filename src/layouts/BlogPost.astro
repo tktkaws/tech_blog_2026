@@ -241,23 +241,16 @@ const {
 		font-size: 2rem;
 	}
 	:global(.markdown-body h2) {
-		font-size: 1.5rem;
+		font-size: 2rem;
 		margin-top: 4rem; /* github-markdown-css 既定 24px の 2 倍 */
-		position: relative;
-		padding-left: 1rem;
-	}
-	:global(.markdown-body h2::before) {
-		content: '';
-		position: absolute;
-		top: 0.15em;
-		bottom: 0.15em;
-		left: 0;
-		width: 0.25rem;
-		background: black;
 	}
 	:global(.markdown-body h3) {
 		font-size: 1.25rem;
-		scroll-margin-top: 1.5rem; /* margin-top と同じ */
+		margin-top: 3rem;
+		scroll-margin-top: 1.5rem;
+	}
+	:global(.markdown-body h2 + h3) {
+		margin-top: 1rem; /* Match h2's margin-bottom from github-markdown-css. */
 	}
 	:global(.markdown-body h4) {
 		font-size: 1rem;
