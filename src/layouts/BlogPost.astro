@@ -273,6 +273,13 @@ const {
 	:global(.markdown-body figure) {
 		margin: 3em 0 0;
 	}
+	:global(.markdown-body figure:has(img)) {
+		margin: 0;
+	}
+	:global(.markdown-body :is(.article-image, picture, img):not(.article-image *, picture *)) {
+		display: block;
+		margin-block: 1lh;
+	}
 	:global(.markdown-body ol) {
 		margin-top: 2em;
 	}

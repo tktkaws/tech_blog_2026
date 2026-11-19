@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { SITE_TITLE } from '../../consts';
+import { withGifPosters } from '../../lib/article-gifs';
 import {
 	highlightCodeBlocks,
 	plainTextExcerpt,
@@ -21,7 +22,7 @@ type Props = CollectionEntry<'blogs'>;
 
 const post = Astro.props;
 const { html: htmlWithIds, headings } = withHeadingIds(post.data.body);
-const html = withOrderedListIds(await highlightCodeBlocks(htmlWithIds));
+const html = await withGifPosters(withOrderedListIds(await highlightCodeBlocks(htmlWithIds)), Astro.url);
 const description = plainTextExcerpt(post.data.body);
 const pubDate = new Date(post.data.publishedAt);
 
