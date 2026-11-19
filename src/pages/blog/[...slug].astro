@@ -63,3 +63,14 @@ const relatedHeading = isRelatedByTags ? 'Related Articles' : 'Latest Articles';
 >
 	<div set:html={html} />
 </BlogPost>
+
+<script>
+	for (const link of document.querySelectorAll('.markdown-body a[href]')) {
+		if (!(link instanceof HTMLAnchorElement)) continue;
+		if (link.protocol !== 'https:' && link.protocol !== 'http:') continue;
+		if (link.hostname === window.location.hostname) continue;
+
+		link.target = '_blank';
+		link.relList.add('noopener', 'noreferrer');
+	}
+</script>
