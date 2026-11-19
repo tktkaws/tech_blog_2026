@@ -3,21 +3,13 @@ import { SITE_TITLE } from '../consts';
 import SearchModal from './SearchModal.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
-const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const TitleTag = Astro.url.pathname === '/' || Astro.url.pathname === '' ? 'h1' : 'div';
 ---
 
 <header class="p-6 sm:p-10 lg:p-12">
-	{
-		isHome ? (
-			<h1 class="font-display text-3xl lg:text-4xl font-bold">
-				<a href="/">{SITE_TITLE}</a>
-			</h1>
-		) : (
-			<a href="/" class="w-fit font-display text-3xl lg:text-4xl font-bold">
-				{SITE_TITLE}
-			</a>
-		)
-	}
+	<TitleTag class="font-display text-3xl lg:text-4xl font-bold">
+		<a href="/">{SITE_TITLE}</a>
+	</TitleTag>
 	<div class="site-controls">
 		<SearchModal />
 		<ThemeToggle />
